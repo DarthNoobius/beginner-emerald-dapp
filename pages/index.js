@@ -26,7 +26,7 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to my <a href="https://github.com/Noobsybot/beginner-emerald-dapp" target="_blank">Emerald DApp!</a>
+          Welcome to my <a href="https://github.com/DarthNoobius/beginner-emerald-dapp" target="_blank">Emerald DApp!</a>
         </h1>
 
         <p className={styles.p}>
