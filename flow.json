@@ -5,12 +5,35 @@
 		"testnet": "access.devnet.nodes.onflow.org:9000"
 	},
 	"contracts": {
-		"HelloWorld": "./flow/cadence/contracts/HelloWorld.cdc"
+		"HelloWorld":{
+			"source": "./flow/cadence/contracts/HelloWorld.cdc",
+			"aliases": {
+				"testnet": "0x8e56d24cc7f80589"
+			}
+		}
 	},
 	"accounts": {
 		"emulator-account": {
 			"address": "f8d6e0586b0a20c7",
 			"key": "ff4da115fe650ab6b9d65edf9559d382dc919de2cab0ea54b0d2e6f2196b0399"
+		},
+		"testnet-account": {
+			"address": "0x8e56d24cc7f80589",
+			"key": {
+			  "type": "hex",
+			  "index": 0,
+			  "signatureAlgorithm": "ECDSA_P256",
+			  "hashAlgorithm": "SHA3_256",
+			  "privateKey": "3c86c6d2f7dee7692edf3c9b4f2e5de6ef3c6ac1a989b2c1492a0623ef0eb4e8"
+			}
+		}
+	},
+	"deployments": {
+		"testnet": {
+		  "testnet-account": [
+			"HelloWorld"
+		  ]
 		}
 	}
 }
+
