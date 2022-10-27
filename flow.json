@@ -5,12 +5,9 @@
 		"testnet": "access.devnet.nodes.onflow.org:9000"
 	},
 	"contracts": {
-		"HelloWorld":{
-			"source": "./flow/cadence/contracts/HelloWorld.cdc",
-			"aliases": {
-				"testnet": "0x8e56d24cc7f80589"
-			}
-		}
+		"HelloWorld":"./flow/cadence/contracts/HelloWorld.cdc",
+		"MakesYouThink":"./flow/cadence/contracts/MakesYouThink.cdc"
+
 	},
 	"accounts": {
 		"emulator-account": {
@@ -31,9 +28,11 @@
 	"deployments": {
 		"testnet": {
 		  "testnet-account": [
-			"HelloWorld"
+			"HelloWorld", 
+			"MakesYouThink"
 		  ]
 		}
+		
 	}
 }
 
