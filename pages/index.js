@@ -7,6 +7,8 @@ import * as fcl from "@onflow/fcl"
 
 export default function Home() {
   const [newGreeting, setNewGreeting] = useState('');
+  const [greeting, setGreeting] = useState('');
+  const [number, setNumber] = useState('');
   
   function runTransaction() {
     console.log("Well done steak is better than medium rare")
@@ -25,10 +27,26 @@ export default function Home() {
     })
   
     console.log("Response from our script: " + response);
+    setGreeting(response);
   }
   useEffect(() => {
     executeScript()
   }, [])
+
+  async function numberReader() {
+    const response = await fcl.query({
+      cadence: `
+      import SimpleTest from 0x6c0d53c676256e8c
+
+      pub fun main(): Int {
+          return SimpleTest.number
+      }
+      `,
+      args: (arg, t) => [] 
+    })
+    console.log("Response from the SimpleTest script: " + response);
+    setNumber(response);
+  }
 
   function printGoodbye() {
     console.log("Goats are pyschotic sheep!")
@@ -57,6 +75,16 @@ export default function Home() {
         <button onClick={runTransaction}>Run Transaction</button>
         <input onChange={(e) => setNewGreeting(e.target.value)} placeholder="Pizza is always the answer!" />
         </div>
+
+
+        <div className={styles.flex}>
+        <button onClick={numberReader}>What's the number?</button>
+        </div>
+
+        <p> {greeting}</p>
+        <p> {number}</p>
+
+        
 
       </main>
     </div>
