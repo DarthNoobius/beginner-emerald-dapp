@@ -10,8 +10,10 @@ export default function Home() {
   const [newGreeting, setNewGreeting] = useState('');
   const [number, setNumber] = useState('');
   const [newNumber, setnewNumber] = useState('');
-  
-  async function runTransaction() {
+  const [txStatusGreeting, settxStatusGreeting] = useState('Run New Greeting Transaction');
+  const [txStatusNumber, settxStatusNumber] = useState('Run New Number Transaction');
+
+  async function runNewGreetingTransaction() {
     const transactionId = await fcl.mutate({
       cadence: `
       import HelloWorld from 0x8e56d24cc7f80589
@@ -33,8 +35,21 @@ export default function Home() {
       authorizations: [fcl.authz], // AUTHORIZATIONS GO HERE
       limit: 999 // GAS LIMIT GOES HERE
     })
-  
+
     console.log("Here is the transactionId: " + transactionId);
+    fcl.tx(transactionId).subscribe(res => {
+      console.log(res);
+      if (res.status === 0 || res.status === 1) {
+        settxStatusGreeting('Pending...');
+      } else if (res.status === 2) {
+        settxStatusGreeting('Finalized...')
+      } else if (res.status === 3) {
+        settxStatusGreeting('Executed...');
+      } else if (res.status === 4) {
+        settxStatusGreeting('Sealed!');
+        setTimeout(() => settxStatusGreeting('Run New Greeting Transaction'), 2000); // Incase of timeout
+      }
+    })
     await fcl.tx(transactionId).onceSealed();
     executeScript();
   }
@@ -61,8 +76,21 @@ export default function Home() {
       authorizations: [fcl.authz], // AUTHORIZATIONS GO HERE
       limit: 999 // GAS LIMIT GOES HERE
     })
-  
+
     console.log("Here is the transactionId: " + transactionId);
+    fcl.tx(transactionId).subscribe(res => {
+      console.log(res);
+      if (res.status === 0 || res.status === 1) {
+        settxStatusNumber('Pending...');
+      } else if (res.status === 2) {
+        settxStatusNumber('Finalized...')
+      } else if (res.status === 3) {
+        settxStatusNumber('Executed...');
+      } else if (res.status === 4) {
+        settxStatusNumber('Sealed!');
+        setTimeout(() => settxStatusNumber('Run New Number Transaction'), 2000); // Incase of timeout
+      }
+    })
     await fcl.tx(transactionId).onceSealed();
     executeNewNumberReader();
   }
@@ -78,7 +106,7 @@ export default function Home() {
       `, // CADENCE CODE GOES IN THESE ``
       args: (arg, t) => [] // ARGUMENTS GO IN HERE
     })
-  
+
     console.log("Response from our script: " + response);
     setGreeting(response);
   }
@@ -95,7 +123,7 @@ export default function Home() {
           return SimpleTest.number
       }
       `,
-      args: (arg, t) => [] 
+      args: (arg, t) => []
     })
     console.log("Response from the SimpleTest script: " + response);
     setNumber(response);
@@ -105,7 +133,7 @@ export default function Home() {
   }, [])
 
   //function printGoodbye() {
-    //console.log("Goats are pyschotic sheep!")
+  //console.log("Goats are pyschotic sheep!")
   //}
 
   return (
@@ -118,28 +146,23 @@ export default function Home() {
 
       <Nav />
 
-      <main className={styles.main}>
+      <div className={styles.welcome}>
         <h1 className={styles.title}>
-          Welcome to my <a href="https://github.com/DarthNoobius/beginner-emerald-dapp" target="_blank">Emerald DApp!</a>
+          Welcome to my <a href="https://academy.ecdao.org" target="_blank">Emerald DApp!</a>
         </h1>
+        <p>This is a DApp created by DarthNoobius.</p>
+      </div>
 
-        <p className={styles.p}>
-        There is no such thing as too much garlic
-        </p>
-
+      <main className={styles.main}>
+        <p>{greeting}</p>
         <div className={styles.flex}>
-        <button onClick={runTransaction}>Run Transaction</button>
-        <input onChange={(e) => setNewGreeting(e.target.value)} placeholder="Pizza is always the answer!" />
-        </div>
-
-        <div className={styles.flex}>
-        <button onClick={runNewNumberTransaction}>Run Transaction</button>
-        <input onChange={(e) => setnewNumber(e.target.value)} placeholder="Enter number" />
-        </div>
+          <input onChange={(e) => setNewGreeting(e.target.value)} placeholder="Pizza is always the answer! Enter your salutations." />
+          <button onClick={runNewGreetingTransaction}>{txStatusGreeting}</button>
         
-        <p> {greeting}</p>
-        <p> {number}</p>
-
+          <input onChange={(e) => setnewNumber(e.target.value)} placeholder="8 is infinity in disguise. What is your number?" />
+          <button onClick={runNewNumberTransaction}>{txStatusNumber}</button>
+        </div>
+        <p>{number}</p>
       </main>
     </div>
   )
