@@ -9,6 +9,7 @@ export default function Home() {
   const [greeting, setGreeting] = useState('');
   const [newGreeting, setNewGreeting] = useState('');
   const [number, setNumber] = useState('');
+  const [newNumber, setnewNumber] = useState('');
   
   async function runTransaction() {
     const transactionId = await fcl.mutate({
@@ -38,6 +39,34 @@ export default function Home() {
     executeScript();
   }
 
+  async function runNewNumberTransaction() {
+    const transactionId = await fcl.mutate({
+      cadence: `
+      import SimpleTest from 0x6c0d53c676256e8c
+
+      transaction(myNewNumber: Int) {
+
+        prepare(signer: AuthAccount) {}
+
+        execute {
+          SimpleTest.updateNumber(newNumber: myNewNumber)
+        }
+      }
+      `,
+      args: (arg, t) => [
+        arg(newNumber, t.Int)
+      ], // ARGUMENTS GO IN HERE
+      proposer: fcl.authz, // PROPOSER GOES HERE
+      payer: fcl.authz, // PAYER GOES HERE
+      authorizations: [fcl.authz], // AUTHORIZATIONS GO HERE
+      limit: 999 // GAS LIMIT GOES HERE
+    })
+  
+    console.log("Here is the transactionId: " + transactionId);
+    await fcl.tx(transactionId).onceSealed();
+    executeNewNumberReader();
+  }
+
   async function executeScript() {
     const response = await fcl.query({
       cadence: `
@@ -57,7 +86,7 @@ export default function Home() {
     executeScript()
   }, [])
 
-  async function numberReader() {
+  async function executeNewNumberReader() {
     const response = await fcl.query({
       cadence: `
       import SimpleTest from 0x6c0d53c676256e8c
@@ -71,9 +100,9 @@ export default function Home() {
     console.log("Response from the SimpleTest script: " + response);
     setNumber(response);
   }
-  //useEffect(() => {
-    //numberReader()
-  //}, [])
+  useEffect(() => {
+    executeNewNumberReader()
+  }, [])
 
   //function printGoodbye() {
     //console.log("Goats are pyschotic sheep!")
@@ -101,6 +130,11 @@ export default function Home() {
         <div className={styles.flex}>
         <button onClick={runTransaction}>Run Transaction</button>
         <input onChange={(e) => setNewGreeting(e.target.value)} placeholder="Pizza is always the answer!" />
+        </div>
+
+        <div className={styles.flex}>
+        <button onClick={runNewNumberTransaction}>Run Transaction</button>
+        <input onChange={(e) => setnewNumber(e.target.value)} placeholder="Enter number" />
         </div>
         
         <p> {greeting}</p>
