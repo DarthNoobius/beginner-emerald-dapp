@@ -6,12 +6,36 @@ import * as fcl from "@onflow/fcl"
 
 
 export default function Home() {
-  const [newGreeting, setNewGreeting] = useState('');
   const [greeting, setGreeting] = useState('');
+  const [newGreeting, setNewGreeting] = useState('');
   const [number, setNumber] = useState('');
   
-  function runTransaction() {
-    console.log("Well done steak is better than medium rare")
+  async function runTransaction() {
+    const transactionId = await fcl.mutate({
+      cadence: `
+      import HelloWorld from 0x8e56d24cc7f80589
+
+      transaction(myNewGreeting: String) {
+
+        prepare(signer: AuthAccount) {}
+
+        execute {
+          HelloWorld.changeGreeting(newGreeting: myNewGreeting)
+        }
+      }
+      `,
+      args: (arg, t) => [
+        arg(newGreeting, t.String)
+      ], // ARGUMENTS GO IN HERE
+      proposer: fcl.authz, // PROPOSER GOES HERE
+      payer: fcl.authz, // PAYER GOES HERE
+      authorizations: [fcl.authz], // AUTHORIZATIONS GO HERE
+      limit: 999 // GAS LIMIT GOES HERE
+    })
+  
+    console.log("Here is the transactionId: " + transactionId);
+    await fcl.tx(transactionId).onceSealed();
+    executeScript();
   }
 
   async function executeScript() {
@@ -26,7 +50,7 @@ export default function Home() {
       args: (arg, t) => [] // ARGUMENTS GO IN HERE
     })
   
-    //console.log("Response from our script: " + response);
+    console.log("Response from our script: " + response);
     setGreeting(response);
   }
   useEffect(() => {
@@ -47,63 +71,13 @@ export default function Home() {
     console.log("Response from the SimpleTest script: " + response);
     setNumber(response);
   }
-  useEffect(() => {
-    numberReader()
-  }, [])
+  //useEffect(() => {
+    //numberReader()
+  //}, [])
 
-  async function executeCtrlcScript() {
-    const response = await fcl.query({
-      cadence: `
-      pub fun main(
-        a: Int, 
-        b: String, 
-        c: UFix64, 
-        d: Address, 
-        e: Bool,
-        f: String?,
-        g: [Int],
-        h: {String: Address}
-      ): String {
-        // Example:
-        // a = 2
-        // b = "Jacob is so cool"
-        // c = 5.0
-        // d = 0x6c0d53c676256e8c
-        // e = true
-        // f = nil
-        // g = [1, 2, 3]
-        // h = {"FLOAT": 0x2d4c3caffbeab845, "EmeraldID": 0x39e42c67cc851cfb}
-  
-        return b
-      }
-      `,
-      args: (arg, t) => [
-        arg("56", t.Int),
-        arg("Svelte is overated!", t.String),
-        arg("3.142", t.UFix64),
-        arg("0x8e56d24cc7f80589", t.Address),
-        arg(false, t.Bool),
-        arg(null, t.Optional(t.String)),
-        arg([3, 5, 8], t.Array(t.Int)),
-        arg(
-          [
-            { key: "FLOAT", value: "0x2d4c3caffbeab845" },
-            { key: "EmeraldID", value: "0x39e42c67cc851cfb" }
-          ], 
-          t.Dictionary({ key: t.String, value: t.Address })
-        )
-      ]
-    })
-    console.log(response)
-  }
-  useEffect(() => {
-    executeCtrlcScript()
-  }, [])
-
-
-  function printGoodbye() {
-    console.log("Goats are pyschotic sheep!")
-  }
+  //function printGoodbye() {
+    //console.log("Goats are pyschotic sheep!")
+  //}
 
   return (
     <div className={styles.container}>
@@ -127,10 +101,6 @@ export default function Home() {
         <div className={styles.flex}>
         <button onClick={runTransaction}>Run Transaction</button>
         <input onChange={(e) => setNewGreeting(e.target.value)} placeholder="Pizza is always the answer!" />
-        </div>
-
-        <div className={styles.flex}>
-        
         </div>
         
         <p> {greeting}</p>
