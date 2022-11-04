@@ -148,9 +148,9 @@ export default function Home() {
 
       <div className={styles.welcome}>
         <h1 className={styles.title}>
-          Welcome to my <a href="https://academy.ecdao.org" target="_blank">Emerald DApp!</a>
+          Welcome to my <a href="https://academy.ecdao.org" target="_blank">Emerald Dapp!</a>
         </h1>
-        <p>This is a DApp created by DarthNoobius.</p>
+        <p>This is a Dapp created by DarthNoobius.</p>
       </div>
 
       <main className={styles.main}>
