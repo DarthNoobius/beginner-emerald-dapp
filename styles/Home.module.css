@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+.welcome1 {
+  text-align: center;
+  font-size: 30px;
+}
+
 .welcome h1 {
   margin-bottom: 5px;
 }
@@ -20,8 +25,8 @@
 .main {
   position: relative;
   top: 30px;
-  width: 30vw;
-  min-width: 300px;
+  width: 25vw;
+  min-width: 250px;
   height: 30vh;
   min-height: 400px;
   background-color: #326765;

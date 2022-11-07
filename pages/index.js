@@ -154,7 +154,7 @@ export default function Home() {
       </div>
 
       <main className={styles.main}>
-        <p>{greeting}</p>
+        
         <div className={styles.flex}>
           <input onChange={(e) => setNewGreeting(e.target.value)} placeholder="Pizza is always the answer! Enter your salutations." />
           <button onClick={runNewGreetingTransaction}><span></span>{txStatusGreeting}</button>
@@ -162,8 +162,12 @@ export default function Home() {
           <input onChange={(e) => setnewNumber(e.target.value)} placeholder="8 is infinity in disguise. What is your number?" />
           <button onClick={runNewNumberTransaction}><span></span>{txStatusNumber}</button>
         </div>
-        <p>{number}</p>
       </main>
+      <br></br>
+      <div className={styles.welcome1}>
+        <p>{greeting}</p>
+        <p>{number}</p>
+      </div>
     </div>
   )
 }
