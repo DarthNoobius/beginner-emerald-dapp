@@ -21,7 +21,7 @@ export default function Nav() {
   return (
     <nav className={styles.nav}>
     <h1>Emerald Dapp</h1>
-    <button onClick={handleAuthentication}>{user.loggedIn ? user.addr : "Log In"}</button>
+    <button onClick={handleAuthentication}><span></span>{user.loggedIn ? user.addr : "Log In"}</button>
     </nav>
   )
 }
